@@ -18,18 +18,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-#           tag_name: ${{ github.ref }}
-#           release_name: Release ${{ github.ref }}
-          tag_name: Version ${{ steps.get_version.outputs.VERSION }}
-          release_name: Publish Update Release ${{ steps.get_version.outputs.VERSION }}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           body: |
             Update: Add some dependences.
             Fix: Fix Bugs
-            Release Version  ```OneKeyQLDependency.tar``` Click to download
+            Release Version OneKeyQLDependency.tar Click to download
             欢迎点 Star, 下载
             Welcome To Star this repo.
+            upload-to-github-release works with ```actions/create-release```
           draft: true
           prerelease: false
+      - uses: xresloader/upload-to-github-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: "*.*"
+          delete_file: ""
+          release_id: ${{ steps.create_release.outputs.id }}
+          overwrite: false
+          verbose: true
       - name: Gzip
         run: |
           mkdir OneKeyQLDependency
@@ -40,8 +48,8 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-#           tag_name: ${{ steps.get_version.outputs.VERSION }}
-#           release_name: ${{ steps.get_version.outputs.VERSION }}
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          release_name: ${{ steps.get_version.outputs.VERSION }}
           file: "OneKeyQLDependency.tar"
           tags: false
           draft: false
